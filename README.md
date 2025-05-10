@@ -134,13 +134,13 @@ npm run dev
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
-- `npm run lint` - Run linter
+- `npm run lint:fix` - Run linter
 
 #### Frontend
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
-- `npm run lint` - Run linter
+- `npm run lint:fix` - Run linter
 
 ## API Endpoints
 
