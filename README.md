@@ -46,9 +46,14 @@ cd <repository-name>
 ```
 
 2. Start the development environment:
-```bash
-./init.sh
-```
+  1) Add .env according to .env.example or run .init script(ONLY FOR LOCAL ENVIRONMENT):
+   ```bash
+   ./init.sh
+   ```
+   2) Run docker-compose.yaml:
+   ```bash
+   docker compose up -d
+   ```
 
 3. Access the application:
 - Frontend: http://localhost:5173
