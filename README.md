@@ -1,95 +1,99 @@
-# GitHub Repository Management System
+# GitHub Repository Manager
 
-A simple project management (CRM) system for public GitHub repositories that allows users to track and manage their favorite repositories.
+A modern web application for tracking and managing GitHub repositories. Built with React, TypeScript, and Fastify.
 
 ## Features
 
-- User authentication and registration
-- Repository management
-  - Add repositories by GitHub path
-  - View repository details
-  - Refresh repository data
-  - Delete repositories
-- Real-time repository statistics
-  - Star count
-  - Fork count
-  - Open issues
-  - Creation date
+- 🔍 Track multiple GitHub repositories
+- 📊 Monitor repository statistics (stars, forks, issues)
+- 🔄 Real-time updates with automatic refresh
+- 🔐 Secure authentication
+- 🎨 Modern, responsive UI
+- ⚡ Fast and efficient performance
 
 ## Tech Stack
 
-### Backend
-- TypeScript 5
-- Node.js 20 (ESM)
-- Fastify
-- MongoDB 6
-- Mongoose 7 + @typegoose/typegoose
-- BullMQ with Redis 7
-- JWT Authentication
-- Zod for validation
-- OpenAPI documentation
-
 ### Frontend
-- Vite
 - React 18
 - TypeScript
-- React Query
+- TanStack Query (React Query)
 - Tailwind CSS
-- shadcn/ui
-- Zustand (optional)
+- shadcn/ui Components
+- Vite
 
-### Development Tools
-- ESLint
-- Prettier
-- TypeScript ESLint
-- Docker & Docker Compose
-- GitHub Actions (CI/CD)
+### Backend
+- Node.js
+- Fastify
+- TypeScript
+- MongoDB
+- JWT Authentication
+- Bull Queue (for background tasks)
 
 ## Prerequisites
 
-- Docker and Docker Compose
-- Node.js 20
-- Git
+- Node.js 18+
+- MongoDB 6+
+- Docker and Docker Compose (optional)
 
 ## Getting Started
 
+### Using Docker (Recommended)
+
 1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd <repository-name>
-   ```
+```bash
+git clone <repository-url>
+cd <repository-name>
+```
 
 2. Start the development environment:
-   ```bash
-   docker-compose up -d
-   ```
+```bash
+./init.sh
+```
 
-3. Install dependencies:
-   ```bash
-   # Backend
-   cd backend
-   npm install
+3. Access the application:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
+- API Documentation: http://localhost:3000/documentation
 
-   # Frontend
-   cd frontend
-   npm install
-   ```
+### Manual Setup
 
-4. Start the development servers:
-   ```bash
-   # Backend
-   cd backend
-   npm run dev
+#### Backend Setup
 
-   # Frontend
-   cd frontend
-   npm run dev
-   ```
+1. Install dependencies:
+```bash
+cd backend
+npm install
+```
 
-5. Access the application:
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3000
-   - API Documentation: http://localhost:3000/documentation
+2. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+#### Frontend Setup
+
+1. Install dependencies:
+```bash
+cd frontend
+npm install
+```
+
+2. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
 
 ## Development
 
@@ -97,22 +101,27 @@ A simple project management (CRM) system for public GitHub repositories that all
 
 ```
 .
-├── backend/           # Backend application
+├── backend/
 │   ├── src/
-│   │   ├── config/   # Configuration files
-│   │   ├── models/   # Database models
-│   │   ├── routes/   # API routes
-│   │   ├── services/ # Business logic
-│   │   └── utils/    # Utility functions
-│   └── tests/        # Backend tests
-├── frontend/         # Frontend application
+│   │   ├── config/     # Configuration files
+│   │   ├── middleware/ # Request middleware
+│   │   ├── models/     # Database models
+│   │   ├── plugins/    # Fastify plugins
+│   │   ├── routes/     # API routes
+│   │   └── services/   # Business logic
+│   ├── Dockerfile
+│   └── package.json
+├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── pages/
-│   │   └── utils/
-│   └── tests/        # Frontend tests
-└── docker/          # Docker configuration
+│   │   ├── components/ # React components
+│   │   ├── hooks/      # Custom React hooks
+│   │   ├── lib/        # Utility functions
+│   │   ├── pages/      # Page components
+│   │   └── styles/     # Global styles
+│   ├── Dockerfile
+│   └── package.json
+├── docker-compose.yaml
+└── init.sh
 ```
 
 ### Available Scripts
@@ -120,14 +129,28 @@ A simple project management (CRM) system for public GitHub repositories that all
 #### Backend
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
-- `npm run test` - Run tests
+- `npm run start` - Start production server
 - `npm run lint` - Run linter
 
 #### Frontend
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
-- `npm run test` - Run tests
+- `npm run preview` - Preview production build
 - `npm run lint` - Run linter
+
+## API Endpoints
+
+### Authentication
+- `POST /auth/login` - User login
+- `POST /auth/logout` - User logout
+- `GET /auth/me` - Get current user
+
+### Repositories
+- `GET /repositories` - List all repositories
+- `POST /repositories` - Add a new repository
+- `GET /repositories/{id}` - Get repository details
+- `DELETE /repositories/{id}` - Delete a repository
+- `POST /repositories/{id}/refresh` - Refresh repository data
 
 ## Contributing
 
@@ -139,4 +162,11 @@ A simple project management (CRM) system for public GitHub repositories that all
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [React](https://reactjs.org/)
+- [Fastify](https://www.fastify.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)

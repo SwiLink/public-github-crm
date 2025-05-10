@@ -1,21 +1,7 @@
 #!/bin/bash
 
-# Create necessary directories
-mkdir -p backend/src/{config,models,routes,services}
-mkdir -p frontend/src/{components,hooks,pages,lib}
-
-# Install backend dependencies
-cd backend
-npm install --legacy-peer-deps
-
-# Install frontend dependencies
-cd ../frontend
-npm install --legacy-peer-deps
-
-# Return to root directory
-cd ..
-
-cat > frontend/.env << EOL
+# Add environment variables
+cat > .env << EOL
 # FRONTEND
 VITE_API_URL=http://localhost:3000/api
 
