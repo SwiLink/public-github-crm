@@ -1,5 +1,9 @@
 version: '3.8'
 
+networks:
+  proxy:
+    name: swilink
+
 services:
   backend:
     build:
@@ -14,7 +18,8 @@ services:
     command: /bin/sh -c "npm install && npm run dev"
     depends_on:
       - mongodb
-      - redis
+    networks:
+      - proxy
 
   frontend:
     build:
@@ -29,6 +34,8 @@ services:
     command: /bin/sh -c "npm install && npm run dev"
     depends_on:
       - backend
+    networks:
+      - proxy
 
   mongodb:
     image: mongo:6
@@ -36,14 +43,8 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+    networks:
+      - proxy
 
 volumes:
   mongodb_data:
-  redis_data: 

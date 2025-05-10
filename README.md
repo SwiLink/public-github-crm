@@ -27,7 +27,6 @@ A modern web application for tracking and managing GitHub repositories. Built wi
 - TypeScript
 - MongoDB
 - JWT Authentication
-- Bull Queue (for background tasks)
 
 ## Prerequisites
 
