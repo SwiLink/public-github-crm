@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const registerSchema = z
   .object({
@@ -71,31 +72,29 @@ export function Register() {
                 <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
             </div>
-            <div className="space-y-2">
-              <Input
-                {...register("password")}
-                type="password"
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <PasswordInput
+                id="password"
+                autoComplete="new-password"
                 placeholder="Password"
-                disabled={isLoading}
+                {...register("password")}
+                error={errors.password?.message}
               />
-              {errors.password && (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
-              )}
             </div>
-            <div className="space-y-2">
-              <Input
+            <div>
+              <label htmlFor="confirmPassword" className="sr-only">
+                Confirm Password
+              </label>
+              <PasswordInput
+                id="confirmPassword"
+                autoComplete="new-password"
+                placeholder="Confirm password"
                 {...register("confirmPassword")}
-                type="password"
-                placeholder="Confirm Password"
-                disabled={isLoading}
+                error={errors.confirmPassword?.message}
               />
-              {errors.confirmPassword && (
-                <p className="text-sm text-red-500">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

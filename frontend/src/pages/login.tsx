@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -67,18 +68,17 @@ export function Login() {
                 <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
             </div>
-            <div className="space-y-2">
-              <Input
-                {...register("password")}
-                type="password"
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <PasswordInput
+                id="password"
+                autoComplete="current-password"
                 placeholder="Password"
-                disabled={isLoading}
+                {...register("password")}
+                error={errors.password?.message}
               />
-              {errors.password && (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
-              )}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
