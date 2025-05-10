@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Card,
   CardContent,
@@ -14,11 +14,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PasswordInput } from "@/components/ui/password-input";
+import { Input } from "@/components/ui/input";
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -58,27 +58,37 @@ export function Login() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Input
-                {...register("email")}
-                type="email"
-                placeholder="Email"
-                disabled={isLoading}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <PasswordInput
-                id="password"
-                autoComplete="current-password"
-                placeholder="Password"
-                {...register("password")}
-                error={errors.password?.message}
-              />
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  Email address
+                </label>
+                <Input
+                  {...register("email")}
+                  type="email"
+                  placeholder="Email"
+                  disabled={isLoading}
+                  autoComplete="username"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="password" className="sr-only">
+                  Password
+                </label>
+                <PasswordInput
+                  id="password"
+                  {...register("password")}
+                  placeholder="Password"
+                  disabled={isLoading}
+                  error={errors.password?.message}
+                  autoComplete="current-password"
+                  required
+                />
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

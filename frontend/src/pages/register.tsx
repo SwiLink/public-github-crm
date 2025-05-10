@@ -18,9 +18,9 @@ import { PasswordInput } from "@/components/ui/password-input";
 
 const registerSchema = z
   .object({
-    email: z.string().email(),
-    password: z.string().min(6),
-    confirmPassword: z.string(),
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -67,6 +67,7 @@ export function Register() {
                 type="email"
                 placeholder="Email"
                 disabled={isLoading}
+                autoComplete="username"
               />
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -78,10 +79,12 @@ export function Register() {
               </label>
               <PasswordInput
                 id="password"
-                autoComplete="new-password"
-                placeholder="Password"
                 {...register("password")}
+                placeholder="Password"
+                disabled={isLoading}
                 error={errors.password?.message}
+                autoComplete="new-password"
+                required
               />
             </div>
             <div>
@@ -90,10 +93,12 @@ export function Register() {
               </label>
               <PasswordInput
                 id="confirmPassword"
-                autoComplete="new-password"
-                placeholder="Confirm password"
                 {...register("confirmPassword")}
+                placeholder="Confirm password"
+                disabled={isLoading}
                 error={errors.confirmPassword?.message}
+                autoComplete="new-password"
+                required
               />
             </div>
           </CardContent>
