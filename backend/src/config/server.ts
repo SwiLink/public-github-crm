@@ -42,7 +42,7 @@ server.register(swagger, {
 });
 
 server.register(swaggerUi, {
-  routePrefix: "/docs",
+  routePrefix: "/documentation",
 });
 
 // Health check endpoint
