@@ -26,9 +26,10 @@ import { Intro } from "@/components/intro";
 import { AddRepoModal } from "@/components/add-repo-modal";
 
 interface Repository {
-  id: string;
+  _id: string;
   owner: string;
   name: string;
+  fullName: string;
   url: string;
   stars: number;
   forks: number;
@@ -58,7 +59,7 @@ export function Dashboard() {
       const response = await api.get("/repositories");
       return response.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
     refetchIntervalInBackground: true,
   });
 
@@ -141,7 +142,7 @@ export function Dashboard() {
 
   const handleDeleteConfirm = () => {
     if (repoToDelete) {
-      deleteRepoMutation.mutate(repoToDelete.id);
+      deleteRepoMutation.mutate(repoToDelete._id);
       setRepoToDelete(null);
     }
   };
@@ -199,7 +200,7 @@ export function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredRepositories?.map((repo) => (
-          <Card key={repo.id}>
+          <Card key={repo._id}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>{repo.name}</span>
@@ -207,7 +208,7 @@ export function Dashboard() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => refreshRepoMutation.mutate(repo.id)}
+                    onClick={() => refreshRepoMutation.mutate(repo._id)}
                     disabled={refreshRepoMutation.isPending}
                   >
                     {refreshRepoMutation.isPending
@@ -231,7 +232,7 @@ export function Dashboard() {
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  {repo.owner}/{repo.name}
+                  {repo.fullName}
                 </a>
               </CardDescription>
             </CardHeader>
@@ -252,7 +253,9 @@ export function Dashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">Created</p>
                   <p className="text-lg font-semibold">
-                    {new Date(repo.createdAt).toUTCString()}
+                    {repo.createdAt
+                      ? new Date(repo.createdAt).toUTCString()
+                      : "-"}
                   </p>
                 </div>
               </div>

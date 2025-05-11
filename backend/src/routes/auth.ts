@@ -2,7 +2,8 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { Type } from "@fastify/type-provider-typebox";
 import bcrypt from "bcryptjs";
 import { UserModel } from "../models/user.model";
-import { authenticate, JWTPayload } from "../middleware/auth";
+import { authenticate } from "../middleware/auth";
+import { server } from "@/config/server";
 
 const registerSchema = Type.Object({
   email: Type.String({ format: "email" }),
@@ -21,38 +22,42 @@ export async function authRoutes(fastify: FastifyInstance) {
       body: registerSchema,
     },
     handler: async (request, reply: FastifyReply) => {
-      const { email, password } = request.body as {
-        email: string;
-        password: string;
-      };
+      try {
+        const { email, password } = request.body as {
+          email: string;
+          password: string;
+        };
 
-      // Check if user exists
-      const existingUser = await UserModel.findOne({ email });
-      if (existingUser) {
-        return reply.status(400).send({ error: "User already exists" });
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create user
+        const user = await UserModel.create({
+          email,
+          password: hashedPassword,
+        });
+
+        // Generate token
+        const token = fastify.jwt.sign({ id: user._id.toString() });
+
+        // Set cookie
+        reply.setCookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+        });
+
+        return { message: "User registered successfully" };
+      } catch (error: any) {
+        // User already exists
+        if (error?.code === 11000) {
+          server.log.error({ error }, "User already exists");
+          return reply.code(400).send({ error: "Invalid credentials" });
+        }
+        server.log.error({ error }, "Registration failed");
+        return reply.code(500).send({ error: "Internal error" });
       }
-
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Create user
-      const user = await UserModel.create({
-        email,
-        password: hashedPassword,
-      });
-
-      // Generate token
-      const token = fastify.jwt.sign({ id: user._id.toString() });
-
-      // Set cookie
-      reply.setCookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      });
-
-      return { message: "User registered successfully" };
     },
   });
 
@@ -62,43 +67,53 @@ export async function authRoutes(fastify: FastifyInstance) {
       body: loginSchema,
     },
     handler: async (request, reply: FastifyReply) => {
-      const { email, password } = request.body as {
-        email: string;
-        password: string;
-      };
-
-      // Find user
-      const user = await UserModel.findOne({ email });
-      if (!user) {
-        return reply.status(401).send({ error: "Invalid credentials" });
+      try {
+        const { email, password } = request.body as {
+          email: string;
+          password: string;
+        };
+  
+        // Find user
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+          return reply.status(401).send({ error: "Invalid credentials" });
+        }
+  
+        // Check password
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+          return reply.status(401).send({ error: "Invalid credentials" });
+        }
+  
+        // Generate token
+        const token = fastify.jwt.sign({ id: user._id.toString() });
+  
+        // Set cookie
+        reply.setCookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+        });
+  
+        return { message: "Logged in successfully" };
+      } catch (error) {
+        server.log.error({ error }, "Login failed");
+        return reply.code(500).send({ error: "Internal error" });
       }
-
-      // Check password
-      const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword) {
-        return reply.status(401).send({ error: "Invalid credentials" });
-      }
-
-      // Generate token
-      const token = fastify.jwt.sign({ id: user._id.toString() });
-
-      // Set cookie
-      reply.setCookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      });
-
-      return { message: "Logged in successfully" };
     },
   });
 
   // Logout
   fastify.post("/logout", {
-    handler: async (request, reply: FastifyReply) => {
-      reply.clearCookie("token");
-      return { message: "Logged out successfully" };
+    handler: async (_, reply: FastifyReply) => {
+      try {
+        reply.clearCookie("token");
+        return { message: "Logged out successfully" };
+      } catch (error) {
+        server.log.error({ error }, "Logout failed");
+        return reply.code(500).send({ error: "Internal error" });
+      }
     },
   });
 
@@ -106,13 +121,18 @@ export async function authRoutes(fastify: FastifyInstance) {
   fastify.get("/me", {
     preHandler: authenticate,
     handler: async (request: FastifyRequest, reply: FastifyReply) => {
-      const user = await UserModel.findById(
-        (request.user as JWTPayload).id
-      ).select("-password");
-      if (!user) {
-        return reply.status(404).send({ error: "User not found" });
+      try {
+        const user = await UserModel.findById(request.user._id).select(
+          "-password"
+        );
+        if (!user) {
+          return reply.status(404).send({ error: "User not found" });
+        }
+        return user;
+      } catch (error) {
+        server.log.error({ error }, "Getting personal information failed");
+        return reply.code(500).send({ error: "Internal error" });
       }
-      return user;
     },
   });
 }

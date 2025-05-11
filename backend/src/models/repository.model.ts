@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IRepository extends Document {
   name: string;
+  fullName: string;
   owner: string;
   url: string;
   description?: string;
@@ -19,6 +20,10 @@ export interface IRepository extends Document {
 const repositorySchema = new Schema(
   {
     name: {
+      type: String,
+      required: true,
+    },
+    fullName: {
       type: String,
       required: true,
     },
@@ -50,11 +55,9 @@ const repositorySchema = new Schema(
     },
     createdAt: {
       type: Date,
-      required: true,
     },
     updatedAt: {
       type: Date,
-      required: true,
     },
     language: {
       type: String,
@@ -73,7 +76,6 @@ const repositorySchema = new Schema(
     },
   },
   {
-    timestamps: true,
     toJSON: {
       virtuals: true,
       getters: true,
