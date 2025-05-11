@@ -30,7 +30,7 @@ A modern web application for tracking and managing GitHub repositories. Built wi
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - MongoDB 6+
 - Docker and Docker Compose (optional)
 
