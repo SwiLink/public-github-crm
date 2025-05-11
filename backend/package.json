@@ -8,7 +8,7 @@
     "start": "node dist/index.js",
     "lint:fix": "eslint . --ext .ts --fix",
     "lint:check": "eslint . --ext .ts --max-warnings 0",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "format:fix": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "type-check": "tsc --noEmit"
   },

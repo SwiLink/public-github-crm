@@ -94,7 +94,7 @@ export async function repositoryRoutes(fastify: FastifyInstance) {
         // Start background refresh if not already in progress
         if (!ongoingRefreshes.has(request.user._id.toString())) {
           ongoingRefreshes.add(request.user._id.toString());
-  
+
           // Get current repositories without awaiting
           RepositoryModel.find({ userId: request.user._id })
             .then((repositories) => {
@@ -125,13 +125,11 @@ export async function repositoryRoutes(fastify: FastifyInstance) {
             "Repository refresh already in progress"
           );
         }
-  
+
         // Return current repositories immediately
         return RepositoryModel.find({ userId: request.user._id }).lean();
       } catch (error) {
-        return reply
-          .status(500)
-          .send({ error: "Internal error" });
+        return reply.status(500).send({ error: "Internal error" });
       }
     },
   });
@@ -198,10 +196,9 @@ export async function repositoryRoutes(fastify: FastifyInstance) {
   fastify.post("/:id/refresh", {
     preHandler: authenticate,
     handler: async (request: FastifyRequest, reply: FastifyReply) => {
-      
       try {
         const { id } = request.params as { id: string };
-  
+
         const repository = await RepositoryModel.findOne({
           _id: id,
           userId: request.user._id,

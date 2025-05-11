@@ -10,7 +10,7 @@
     "test": "vitest",
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "lint:check": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:fix": "prettier --write \"src/**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "type-check": "tsc --noEmit"
   },

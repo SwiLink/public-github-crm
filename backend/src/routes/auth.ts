@@ -72,22 +72,22 @@ export async function authRoutes(fastify: FastifyInstance) {
           email: string;
           password: string;
         };
-  
+
         // Find user
         const user = await UserModel.findOne({ email });
         if (!user) {
           return reply.status(401).send({ error: "Invalid credentials" });
         }
-  
+
         // Check password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
           return reply.status(401).send({ error: "Invalid credentials" });
         }
-  
+
         // Generate token
         const token = fastify.jwt.sign({ id: user._id.toString() });
-  
+
         // Set cookie
         reply.setCookie("token", token, {
           httpOnly: true,
@@ -95,7 +95,7 @@ export async function authRoutes(fastify: FastifyInstance) {
           sameSite: "lax",
           path: "/",
         });
-  
+
         return { message: "Logged in successfully" };
       } catch (error) {
         server.log.error({ error }, "Login failed");
