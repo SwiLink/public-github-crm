@@ -145,6 +145,7 @@ npm run dev
 ## API Endpoints
 
 ### Authentication
+- `POST /auth/login` - User registration
 - `POST /auth/login` - User login
 - `POST /auth/logout` - User logout
 - `GET /auth/me` - Get current user
